@@ -15,7 +15,7 @@ Sub Module Name Description - Overloads the Class LoadFactOperator with the reds
 Variables Details - 
 redshift_conn_id  - Redshift connection id from the Airflow WebUI for running the PostgresHook hooks.
 table_name  	  - Name of the fact table name
-sql_statement 	  - Usual DELETE/INSERT SQL statement for loading the fact data table
+sql_statement 	  - Usual TRUNCATE/INSERT SQL statement for loading the fact data table
 append_data       - Flag used to check the append data into the fact table before inserting the data
 
 '''
@@ -50,7 +50,7 @@ class LoadFactOperator(BaseOperator):
         self.log.info(f'Adding data to {self.table_name} fact table.')
 
         if self.append_data  != True:            
-            redshift_hook.run(f"DELETE FROM {self.table_name}")
+            redshift_hook.run(f"TRUNCATE {self.table_name}")
         redshift_hook.run(f"""INSERT INTO {self.table_name} 
                               {self.sql_statement} ;""")
         

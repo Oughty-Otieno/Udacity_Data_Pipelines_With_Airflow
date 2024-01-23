@@ -18,7 +18,7 @@ aws_creds_id      - AWS Credentials stored with ACCESS KEY ID and SECRET ACCESS 
 s3_bucket         - Name of the S3 Bucket
 s3_key            - sub folder location/name 
 table_name  	  - Name of the dimension table name
-extra_params 	  - Usual DELETE/INSERT SQL statement for loading the staging data table
+extra_params 	  - Usual TRUNCATE/INSERT SQL statement for loading the staging data table
 
 
 '''
@@ -65,7 +65,7 @@ class StageToRedshiftOperator(BaseOperator):
         redshift    =   PostgresHook(postgres_conn_id=self.redshift_conn_id)
 
         self.log.info("Clearing data from target staging Redshift table before loading the data")
-        redshift.run("DELETE FROM {}".format(self.redshift_table_name))
+        redshift.run("TRUNCATE {}".format(self.redshift_table_name))
 
         self.log.info("Copying data from S3 to Redshift")
         rendered_key = self.s3_key.format(**context)

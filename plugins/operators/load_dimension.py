@@ -15,7 +15,7 @@ Variables Details -
 
 redshift_conn_id  - Redshift connection id from the Airflow WebUI for running the PostgresHook hooks.
 table_name  	  - Name of the dimension table name
-sql_statement 	  - Usual DELETE/INSERT SQL statement for loading the dimension data table
+sql_statement 	  - Usual TRUNCATE/INSERT SQL statement for loading the dimension data table
 append_data       - Flag used to check the append data into the dimension table before inserting the data
 
 '''
@@ -49,7 +49,7 @@ class LoadDimensionOperator(BaseOperator):
         redshift_hook = PostgresHook(postgres_conn_id=self.redshift_conn_id)
         self.log.info(f'Adding data to {self.table_name} dimention table.')
         if self.append_data != True:
-            redshift_hook.run(f"DELETE FROM {self.table_name}")
+            redshift_hook.run(f"TRUNCATE {self.table_name}")
         redshift_hook.run(f"""INSERT INTO {self.table_name} 
                               {self.sql_statement} ;""")
         self.log.info('Dimension table {self.table_name} loaded')
